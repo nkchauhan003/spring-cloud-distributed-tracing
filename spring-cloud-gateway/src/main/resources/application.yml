@@ -1,0 +1,55 @@
+#App
+spring:
+  application:
+    name: edge-server
+  zipkin:
+    baseUrl: http://127.0.0.1:9411/
+#Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+
+#Logs
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.sleuth: DEBUG
+
+#Eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+      initialInstanceInfoReplicationIntervalSeconds: 5
+      registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
+#Routes
+spring.cloud.gateway.routes:
+  - id: order-service-open-api
+    uri: lb://order-service
+    predicates:
+      - Path=/order-service/**
+  - id: order-api
+    uri: lb://order-service
+    predicates:
+      - Path=/order/**
+  - id: eureka-ui
+    uri: http://localhost:8761
+    predicates:
+      - Path=/eurekawebui
+  - id: eureka-css-js
+    uri: http://localhost:8761
+    predicates:
+      - Path=/eureka/**
+
+spring.sleuth.sampler.probability: 1.0
+spring.sleuth.reactor.instrumentation-type: decorate-on-last

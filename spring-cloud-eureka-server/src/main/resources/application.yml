@@ -1,0 +1,30 @@
+#App
+spring:
+  application:
+    name: eureka-server
+  zipkin:
+    baseUrl: http://127.0.0.1:9411/
+server:
+  port: 8761
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+    response-cache-update-interval-ms: 5000
+  dashboard:
+    path: /eurekawebui
+
+#Tracing
+#spring.zipkin.sender.type: rabbit
+spring.sleuth.sampler.probability: 1.0
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet:
+            DispatcherServlet: TRACE
